@@ -9,6 +9,7 @@ services:
             - sitea
             - siteb
             - wordpress
+            - phpmyadmin
     sitea:
         build: ./siteA
     siteb:
@@ -20,20 +21,26 @@ services:
         MYSQL_DATABASE: datas
         MYSQL_USER: user
         MYSQL_PASSWORD: pass
-        MYSQL_RANDOM_ROOT_PASSWORD: '1'
+        MYSQL_ROOT_PASSWORD: pass
+      networks:
+        - wpdbnet
     wordpress:
-      depends_on:
-        - db
       image: wordpress
       environment:
         WORDPRESS_DB_HOST: db
         WORDPRESS_DB_USER: user
         WORDPRESS_DB_PASSWORD: pass
         WORDPRESS_DB_NAME: datas
+      networks:
+        - wpdbnet
+        - default
     phpmyadmin:
       depends_on:
         - db
       image: phpmyadmin/phpmyadmin
-      ports:
-        - 8084:80
+      networks:
+        - wpdbnet
+        - default
 
+networks:
+    wpdbnet:
